@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Level Shoes Assistant",
+  "version": "1.0",
+  "description": "Use natural language to filter shoes on LevelShoes.com",
+  "permissions": [
+    "scripting",
+    "tabs",
+    "activeTab"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.levelshoes.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "host_permissions": [
+    "*://www.levelshoes.com/*"
+  ],
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
