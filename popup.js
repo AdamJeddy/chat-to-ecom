@@ -1,17 +1,37 @@
 document.getElementById("runQuery").addEventListener("click", async () => {
   const query = document.getElementById("queryInput").value;
-  console.log("[Popup] User query:", query);
+  const errorPanel = document.getElementById("errorPanel");
+  const filtersPanel = document.getElementById("filtersPanel");
+  const filtersList = document.getElementById("filtersList");
+  const filtersCount = document.getElementById("filtersCount");
 
-  const parsedFilters = await parseQueryWithGPT(query);
-  console.log("[Popup] GPT parsed:", parsedFilters);
+  errorPanel.style.display = "none";
+  filtersPanel.style.display = "none";
+  filtersList.innerHTML = "";
+  filtersCount.textContent = "0";
 
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      func: runFilterQuery,
-      args: [parsedFilters]
+  try {
+    const parsedFilters = await parseQueryWithGPT(query);
+    if (!parsedFilters || Object.keys(parsedFilters).length === 0) {
+      throw new Error("No filters could be extracted from your query.");
+    }
+    // Show filters in UI
+    filtersPanel.style.display = "block";
+    const filterEntries = Object.entries(parsedFilters).filter(([k, v]) => v && v !== "null" && v !== "undefined");
+    filtersCount.textContent = filterEntries.length;
+    filtersList.innerHTML = filterEntries.map(([k, v]) => `<li><b>${k}:</b> ${v}</li>`).join("");
+
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        func: runFilterQuery,
+        args: [parsedFilters]
+      });
     });
-  });
+  } catch (err) {
+    errorPanel.textContent = err.message || "An error occurred. Please try again.";
+    errorPanel.style.display = "block";
+  }
 });
 
 

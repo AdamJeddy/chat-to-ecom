@@ -1,19 +1,70 @@
 /* styles.css */
 body {
-  font-family: sans-serif;
-  padding: 10px;
-  width: 200px;
-  padding-right: 30px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  padding: 16px 18px 16px 16px;
+  width: 320px;
+  background: #fafbfc;
+}
+h3 {
+  margin-top: 0;
+  color: #222;
+  font-size: 1.2em;
+  letter-spacing: 0.5px;
 }
 input {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+  background: #fff;
+  box-sizing: border-box;
 }
 button {
-  padding: 8px 12px;
-  background-color: #111;
-  color: white;
+  padding: 9px 16px;
+  background: #111;
+  color: #fff;
   border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 1em;
   cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #333;
+}
+#filtersPanel {
+  background: #f3f6fa;
+  border: 1px solid #e0e4ea;
+  border-radius: 7px;
+  padding: 10px 12px 8px 12px;
+  margin-top: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+#filtersPanel h4 {
+  margin: 0 0 6px 0;
+  font-size: 1em;
+  color: #444;
+}
+#filtersList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.98em;
+}
+#filtersList li {
+  margin-bottom: 2px;
+  color: #222;
+}
+#errorPanel {
+  display: none;
+  color: #b00020;
+  background: #fff0f0;
+  border: 1px solid #f5c2c7;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 14px;
+  font-size: 0.98em;
+  box-shadow: 0 1px 4px rgba(200,0,0,0.04);
 }
