@@ -29,10 +29,11 @@ async function parseQueryWithGPT(query) {
     body: JSON.stringify({
       model: "gpt-4",
       messages: [
-        { role: "system", content: "Extract shoe filter criteria from shopping queries. Return as JSON like { category, color, maxPrice, size, sort }." },
+        { role: "system", content: `Extract shoe filter criteria from shopping queries. Return as JSON like { category, color, maxPrice, size, sort, brand }.
+IMPORTANT: The color must be one of the following (map any user color to the closest from this list): [\"animal_printed\",\"beige\",\"black\",\"blue\",\"brown\",\"burgundy\",\"cream\",\"gold\",\"green\",\"grey\",\"khaki\",\"multicolored\",\"navy\",\"neutral\",\"orange\",\"pink\",\"printed\",\"purple\",\"red\",\"silver\",\"taupe\",\"white\"]\nIf the user specifies a designer or brand (e.g., \"adidas\", \"Nike\", \"Gucci\"), include it as the 'brand' field in the JSON. The value of 'brand' must be in lowercase and spaces must be replaced with underscores (e.g., 'Alexander McQueen' -> 'alexander_mcqueen').` },
         { role: "user", content: query }
       ],
-      temperature: 0.2
+      temperature: 0.3
     })
   });
 
