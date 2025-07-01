@@ -2,11 +2,18 @@
 <html>
 <head>
   <link rel="stylesheet" href="styles.css" />
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
 </head>
 <body>
-  <h3>Talk to LevelShoes</h3>
+  <h3>Talk to Level Shoes</h3>
   <input type="text" id="queryInput" placeholder="e.g., white sneakers under 1000" />
   <button id="runQuery">Find Shoes</button>
+  <div id="filtersPanel" style="display:none; margin-top:10px;">
+    <h4>Filters Applied (<span id="filtersCount">0</span>):</h4>
+    <ul id="filtersList"></ul>
+  </div>
+  <div id="errorPanel" style="display:none; color:#b00020; margin-top:10px;"></div>
 </body>
 <script src="popup.js"></script>
 </html>

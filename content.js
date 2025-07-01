@@ -6,7 +6,8 @@ window.addEventListener("message", event => {
   }
 });
 
-function applyFiltersViaURL({ category, color, maxPrice, size, sort }) {
+// TODO: Add minPrice logic
+function applyFiltersViaURL({ category, color, maxPrice, size, sort, brand }) {
   const base = "https://www.levelshoes.com/men/shoes.html";
   const params = new URLSearchParams();
 
@@ -17,6 +18,7 @@ function applyFiltersViaURL({ category, color, maxPrice, size, sort }) {
     const min = 0;
     params.set("price", `${min}-${maxPrice}`);
   }
+  if (brand) params.set("brand", brand); // Add brand/designer to URL if present
   // Designer/Brand or sort logic can go here if found in parsed filters
 
   const newUrl = `${base}?${params.toString()}`;

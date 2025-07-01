@@ -1,17 +1,37 @@
 document.getElementById("runQuery").addEventListener("click", async () => {
   const query = document.getElementById("queryInput").value;
-  console.log("[Popup] User query:", query);
+  const errorPanel = document.getElementById("errorPanel");
+  const filtersPanel = document.getElementById("filtersPanel");
+  const filtersList = document.getElementById("filtersList");
+  const filtersCount = document.getElementById("filtersCount");
 
-  const parsedFilters = await parseQueryWithGPT(query);
-  console.log("[Popup] GPT parsed:", parsedFilters);
+  errorPanel.style.display = "none";
+  filtersPanel.style.display = "none";
+  filtersList.innerHTML = "";
+  filtersCount.textContent = "0";
 
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      func: runFilterQuery,
-      args: [parsedFilters]
+  try {
+    const parsedFilters = await parseQueryWithGPT(query);
+    if (!parsedFilters || Object.keys(parsedFilters).length === 0) {
+      throw new Error("No filters could be extracted from your query.");
+    }
+    // Show filters in UI
+    filtersPanel.style.display = "block";
+    const filterEntries = Object.entries(parsedFilters).filter(([k, v]) => v && v !== "null" && v !== "undefined");
+    filtersCount.textContent = filterEntries.length;
+    filtersList.innerHTML = filterEntries.map(([k, v]) => `<li><b>${k}:</b> ${v}</li>`).join("");
+
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        func: runFilterQuery,
+        args: [parsedFilters]
+      });
     });
-  });
+  } catch (err) {
+    errorPanel.textContent = err.message || "An error occurred. Please try again.";
+    errorPanel.style.display = "block";
+  }
 });
 
 
@@ -29,10 +49,11 @@ async function parseQueryWithGPT(query) {
     body: JSON.stringify({
       model: "gpt-4",
       messages: [
-        { role: "system", content: "Extract shoe filter criteria from shopping queries. Return as JSON like { category, color, maxPrice, size, sort }." },
+        { role: "system", content: `Extract shoe filter criteria from shopping queries. Return as JSON like { category, color, maxPrice, size, sort, brand }.
+IMPORTANT: The color must be one of the following (map any user color to the closest from this list): [\"animal_printed\",\"beige\",\"black\",\"blue\",\"brown\",\"burgundy\",\"cream\",\"gold\",\"green\",\"grey\",\"khaki\",\"multicolored\",\"navy\",\"neutral\",\"orange\",\"pink\",\"printed\",\"purple\",\"red\",\"silver\",\"taupe\",\"white\"]\nIf the user specifies a designer or brand (e.g., \"adidas\", \"Nike\", \"Gucci\"), include it as the 'brand' field in the JSON. The value of 'brand' must be in lowercase and spaces must be replaced with underscores (e.g., 'Alexander McQueen' -> 'alexander_mcqueen').` },
         { role: "user", content: query }
       ],
-      temperature: 0.2
+      temperature: 0.3
     })
   });
 
